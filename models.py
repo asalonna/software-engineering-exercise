@@ -26,3 +26,4 @@ class AssignedCodes(Base):
     __tablename__ = 'assigned codes'
     message_id = Column(Integer, ForeignKey('Message.id'))
     code_id = Column(Integer, ForeignKey('Code.id'))
+    assigned_substring = Column(String)

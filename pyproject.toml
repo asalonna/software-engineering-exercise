@@ -11,6 +11,7 @@ dependencies = [
     "pytest>=7.3.2",
     "uvicorn[standard]>=0.22.0",
     "curio>=1.6",
+    "httpx>=0.24.1",
 ]
 requires-python = ">=3.10"
 license = {text = "MIT"}

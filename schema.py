@@ -1,9 +1,7 @@
 from pydantic import BaseModel
 from enum import Enum
 
-class Type(str, Enum):
-    question: str
-    response: str
+from models import Type
 
 class Message(BaseModel):
     sibling_id: int

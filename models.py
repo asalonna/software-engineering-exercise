@@ -12,8 +12,8 @@ class Type(enum.Enum):
 class Message(Base):
     __tablename__ = 'message'
     id = Column(Integer, primary_key=True, index=True)
-    sibling_id=Column(Integer, ForeignKey('Message.id'))
-    message_type = Column(Type)
+    sibling_id=Column(Integer, ForeignKey('message.id'))
+    message_type = Column(Enum(Type))
     message_body= Column(String)
 
 class Code(Base):
@@ -24,6 +24,9 @@ class Code(Base):
 class AssignedCodes(Base):
     __tablename__ = 'assigned codes'
     assigned_id = Column(Integer, primary_key=True, index=True)
-    message_id = Column(Integer, ForeignKey('Message.id'))
-    code_id = Column(Integer, ForeignKey('Code.id'))
+    message_id = Column(Integer, ForeignKey('message.id'))
+    code_id = Column(Integer, ForeignKey('code.id'))
     assigned_substring = Column(String)
+
+    message = relationship('Message')
+    code = relationship('Code')

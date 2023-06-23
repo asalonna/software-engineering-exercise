@@ -9,7 +9,6 @@ class Message(BaseModel):
     sibling_id: int
     message_type: Type
     message_body: str
-    assigned_codes: int
 
     class Config:
         orm_mode = True

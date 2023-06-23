@@ -15,7 +15,6 @@ class Message(Base):
     sibling_id=Column(Integer, ForeignKey('Message.id'))
     message_type = Column(Type)
     message_body= Column(String)
-    assigned_codes=Column(Integer, ForeignKey('code.id'))
 
 class Code(Base):
     __tablename__ = 'code'
@@ -24,6 +23,7 @@ class Code(Base):
 
 class AssignedCodes(Base):
     __tablename__ = 'assigned codes'
+    assigned_id = Column(Integer, primary_key=True, index=True)
     message_id = Column(Integer, ForeignKey('Message.id'))
     code_id = Column(Integer, ForeignKey('Code.id'))
     assigned_substring = Column(String)

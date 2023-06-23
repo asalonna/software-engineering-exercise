@@ -16,6 +16,8 @@ class Message(Base):
     message_type = Column(Enum(Type))
     message_body= Column(String)
 
+    code_string = ""
+
 class Code(Base):
     __tablename__ = 'code'
     id = Column(Integer, primary_key=True, index=True)

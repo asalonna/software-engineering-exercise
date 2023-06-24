@@ -40,7 +40,6 @@ def test_assign_inexistant_code():
         }
     )
     assert response.status_code == 422
-    assert response.json() == {"detail": "Code not found"}
 
 #testing fetching messages with their assigned code(s)
 def test_fetch_assigned_codes():

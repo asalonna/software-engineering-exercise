@@ -41,6 +41,9 @@ jobs:
       - name: Install dependencies
         run: |
           pdm sync -d -G testing
+      - name: Run Migrations
+        run: |
+          pdm run alembic revision --autogenerate -m "New Migration"
       - name: Test with pytest
         run: |
-          # pdm run pytest
+          pdm run pytest

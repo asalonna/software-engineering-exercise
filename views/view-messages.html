@@ -10,8 +10,8 @@
 <body>
     
     <!-- navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white text-dark margin-auto">
-        <a class="navbar-brand" href="#">Home</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary text-light margin-auto">
+        <a class="navbar-brand" href="/views/index.html">Home</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -34,24 +34,11 @@
     <div class="container bg-white vh-100 pt-5 pb-5 ml-5" id="app">
         <h1 class="text-primary mb-3">View Messages</h1>
         
-        <!-- filter dropdown -->
-        <div class="dropdown pb-3">
-            <!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                Code
-            </button> -->
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Example</a>
-                <a class="dropdown-item" href="#">Example</a>
-                <a class="dropdown-item" href="#">Example</a>
-
-            </div>
-        </div>
-        
         <!-- display data -->
         <table class="table pt-5">
             <thead class="thead-dark">
               <tr>
-                <th scope="col">#</th>
+                <th scope="col">ID</th>
                 <th scope="col">Message Type</th>
                 <th scope="col">Message</th>
                 <th scope="col">Code(s)</th>
@@ -59,13 +46,15 @@
             </thead>
             <tbody v-for="(message, i) in messages.data" :key="message.id">
               <tr>
-                <th scope="row">{{ message.id }}</th>
+                <th scope="row"><a v-bind:href="'/views/view-message-data.html?messageid='+ message.id">{{ message.id }}</a></th>
                 <td>{{ message.message_type }}</td>
                 <td>{{ message.message_body }}</td>
                 <td>{{ message.code_string }}</td>
               </tr>
             </tbody>
           </table>
+
+           
     </div>
 
 
@@ -77,6 +66,11 @@
 
     <script>
       let app = Vue.createApp({
+      computed:{
+        href(){
+          return '#' + this.Category._id
+        }
+      },
       data () {
         return {
           info: null,

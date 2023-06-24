@@ -12,6 +12,7 @@ def test_fetch_messages():
 #todo:
 #test fetching a specific message
 #test fetching a non existant specific message
+#test deleting assigned message codes
 
 #testing fetching codes
 def test_fetch_codes():

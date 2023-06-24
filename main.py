@@ -24,6 +24,7 @@ from typing import List
 load_dotenv('.env')
 
 app = FastAPI()
+#todo: try catch?
 
 #to avoid csrftokenError
 app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URL'])
@@ -53,13 +54,11 @@ async def fetch_messages():
         messages = db.session.query(ModelMessage).all()
     for message in messages:
         codes = ""
-        print(message.id)
         assigned_codes = db.session.query(ModelAssignedCodes).filter_by(message_id=message.id)
         for assigned_code in assigned_codes:
             code_list = db.session.query(ModelCode).filter_by(id=assigned_code.code_id)
             for code in code_list:
                 codes = codes + (code.code_body) + ", "
-        print(codes)
         message.code_string = codes
     return messages
     
@@ -80,31 +79,55 @@ async def fetch_codes():
     return codes
 
 #fetch specific message
-@app.get("api/messages/{id}")
-async def fetch_specific_message():
-    print(1)
+@app.get("/api/messages/{id}")
+async def fetch_specific_message(id: int):
+    print(id)
+    message = db.session.query(ModelMessage).get(id)
+    codes = ""
+    assigned_codes = db.session.query(ModelAssignedCodes).filter_by(message_id=message.id)
+    for assigned_code in assigned_codes:
+        code_list = db.session.query(ModelCode).filter_by(id=assigned_code.code_id)
+        for code in code_list:
+            codes = codes + (code.code_body) + ", "
+    message.code_string = codes
+
+    return message
 
 #assign code to a message
 @app.post("/api/assign_codes")
 async def assign_codes(assigned: SchemeAssignedCodes):
+    exists = db.session.query(ModelAssignedCodes).filter_by(code_id=assigned.code_id, message_id=assigned.message_id, assigned_substring=assigned.assigned_substring)
+    for i in exists:
+        return {}
     db_assigned = ModelAssignedCodes(message_id=assigned.message_id, code_id = assigned.code_id, assigned_substring = assigned.assigned_substring)
     db.session.add(db_assigned)
     db.session.commit()
     return db_assigned
 
-#fetch stuff
-@app.get("/api/stuff")
-async def fetch_stuff():
-    stuff = db.session.query(ModelAssignedCodes).all()
-    return stuff
+#fetch assigned codes for a given message
+@app.get("/api/assigned/{msg_id}")
+async def fetch_assigned(msg_id: int):
+    message = db.session.query(ModelMessage).get(msg_id)
+    if message is None:
+        return {}
+    assigned_codes = db.session.query(ModelAssignedCodes).filter_by(message_id=message.id)
+    if assigned_codes == []:
+        return {}
+    data = []
+    for assigned in assigned_codes:
+        data.append({
+            "assigned_id": assigned.assigned_id,
+            "assigned_substring": assigned.assigned_substring, 
+            "code_body": assigned.code.code_body
+            })
+    return data
 
 
 #todo: add api to delete a specified assigned code
-
-#fetch message codes
-@app.get("api/assigned_data")
-async def fetch_assigned_data():
-    print(1)
+@app.delete("/api/delete_assigned/{assigned_id}")
+async def remove_code_from_message(assigned_id: int):
+    db.session.query(ModelAssignedCodes).filter_by(assigned_id=assigned_id).delete()
+    db.session.commit()
 
 #for running locally
 if __name__ == '__main__':

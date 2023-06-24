@@ -97,6 +97,7 @@
           assigned: []
         }
       },
+      // populates message data table when mounted
         mounted () {
           axios
           .get(`http://localhost:8000/api/messages/${messageId}`)

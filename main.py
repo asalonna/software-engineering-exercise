@@ -24,7 +24,6 @@ from typing import List
 load_dotenv('.env')
 
 app = FastAPI()
-#todo: try catch?
 
 #to avoid csrftokenError
 app.add_middleware(DBSessionMiddleware, db_url=os.environ['DATABASE_URL'])
@@ -37,14 +36,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#to delete table data
-#    db.session.query(ModelMessage).delete()
-#    db.session.commit()
-
-#fetch all messages
 @app.get("/api/messages")
 async def fetch_messages():
+    """Fetches messages from the database.
+
+    Fetches a list of all the messages from the database. 
+    If the database is empty, it will populate it with example messages.
+    """
     messages = db.session.query(ModelMessage).all()
+    #example messages
     if messages == []:
         db_msg = ModelMessage(message_type=ModelType.question, message_body="How are you feeling right now?")
         db.session.add(db_msg)
@@ -56,6 +56,7 @@ async def fetch_messages():
         db.session.add(db_msg)
         db.session.commit()
         messages = db.session.query(ModelMessage).all()
+    #populates code string
     for message in messages:
         codes = ""
         assigned_codes = db.session.query(ModelAssignedCodes).filter_by(message_id=message.id)
@@ -66,11 +67,15 @@ async def fetch_messages():
         message.code_string = codes
     return messages
     
-
-#fetch all codes
 @app.get("/api/codes")
 async def fetch_codes():
+    """Fetches codes from the database.
+
+    Fetches a list of all the codes from the database. 
+    If the database is empty, it will populate it with example codes.
+    """
     codes = db.session.query(ModelCode).all()
+    #example codes
     if codes == []:
         db_msg = ModelCode(code_body="Stress")
         db.session.add(db_msg)
@@ -86,10 +91,10 @@ async def fetch_codes():
         codes = db.session.query(ModelCode).all()
     return codes
 
-#fetch specific message
 @app.get("/api/messages/{id}")
 async def fetch_specific_message(id: int):
-    print(id)
+    """Fetches a specific message and its details from the database
+    """
     message = db.session.query(ModelMessage).get(id)
     codes = ""
     assigned_codes = db.session.query(ModelAssignedCodes).filter_by(message_id=message.id)
@@ -98,12 +103,14 @@ async def fetch_specific_message(id: int):
         for code in code_list:
             codes = codes + (code.code_body) + ", "
     message.code_string = codes
-
     return message
 
-#assign code to a message
 @app.post("/api/assign_codes")
 async def assign_codes(assigned: SchemeAssignedCodes):
+    """Assigns codes to a section of a message.
+
+    Assigns codes to a message, storing the part of the message that was coded. Duplicates will be rejected.
+    """
     exists = db.session.query(ModelAssignedCodes).filter_by(code_id=assigned.code_id, message_id=assigned.message_id, assigned_substring=assigned.assigned_substring)
     for i in exists:
         return {}
@@ -112,9 +119,10 @@ async def assign_codes(assigned: SchemeAssignedCodes):
     db.session.commit()
     return db_assigned
 
-#fetch assigned codes for a given message
 @app.get("/api/assigned/{msg_id}")
 async def fetch_assigned(msg_id: int):
+    """Fetch assigned codes for a given message.
+    """
     message = db.session.query(ModelMessage).get(msg_id)
     if message is None:
         return {}
@@ -130,10 +138,10 @@ async def fetch_assigned(msg_id: int):
             })
     return data
 
-
-#todo: add api to delete a specified assigned code
 @app.delete("/api/delete_assigned/{assigned_id}")
 async def remove_code_from_message(assigned_id: int):
+    """Deletes a specified assigned code from the database.
+    """
     db.session.query(ModelAssignedCodes).filter_by(assigned_id=assigned_id).delete()
     db.session.commit()
 

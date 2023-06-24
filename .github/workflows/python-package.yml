@@ -43,7 +43,7 @@ jobs:
           pdm sync -d -G testing
       - name: Run Migrations
         run: |
-          pdm stamp head
+          pdm run alembic stamp head
           pdm run alembic revision --autogenerate -m "New Migration"
       - name: Test with pytest
         run: |

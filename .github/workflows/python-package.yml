@@ -20,7 +20,7 @@ jobs:
         os: ["windows-latest", "ubuntu-latest", "macos-latest"]
 
     env:
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
 
     services:
       postgres:

@@ -5,7 +5,7 @@ How to run:
 1. Activate virtual environment.
 2. Install dependancies using pdm sync
 3. Create an empty database using postgresql
-4. Create a .env file and add the following line: "DATABASE_URL = 'postgresql://postgres:<password>@localhost/<name>'"
+4. Create a .env file and add the following line: "DATABASE_URL = 'postgresql://postgres:[password]@localhost/[name]'"
    changing the sections in the <> accordingly.
 5. Run "pdm run alembic stamp head" and "pdm run alembic revision --autogenerate -m "New Migration"" to populate the created database.
 6. Run "uvicorn main:app --reload" to run the API server

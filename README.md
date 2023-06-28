@@ -11,7 +11,7 @@ How to run:
 5. Create a .env file and add the following line: "DATABASE_URL = 'postgresql://postgres:[password]@localhost/[name]'"
    changing the sections in the []. This should use the password for the default user postgres on your computer, and the name of the database.
    If the password were 'password', and the name 'db', the result would be the following:
-   DATABASE_URL = 'postgresql://postgres:password@localhost/db
+   DATABASE_URL = 'postgresql://postgres:password@localhost/db'
 7. Run "pdm run alembic stamp head" and "pdm run alembic revision --autogenerate -m "New Migration"" to populate the created database.
 8. Run "uvicorn main:app --reload" to run the API server
 9. Open the index.html using the live server vscode extension or similar
